@@ -127,7 +127,7 @@ class RecommendRequest(BaseModel):
 
 @app.get("/api/questions")
 def questions():
-    """思い出しガイドの質問と選択肢を表示順に返す。現在はダミーデータ"""
+    """思い出しガイドの質問と選択肢を表示順に返す。"""
     return {"questions": recommend.get_questions()}
 
 
@@ -138,11 +138,11 @@ def recommendations(body: RecommendRequest):
     choice_Ids = list(dict.fromkeys(body.choiceIds))  # 重複を除く
     if not choice_Ids:
         raise HTTPException(
-            status_code=422, detail="choiceIdsが空です。選択肢IDを1つ以上送ってください"
+            status_code=422, detail="choice_idが空です。選択肢IDを1つ以上送ってください"
         )
     if len(choice_Ids) > MAX_ANSWERS:
         raise HTTPException(
-            status_code=422, detail=f"choiceIdsが{MAX_ANSWERS}件を超えています。"
+            status_code=422, detail=f"choice_idが{MAX_ANSWERS}件を超えています。"
         )
 
     rows = recommend.recommend(choice_Ids)

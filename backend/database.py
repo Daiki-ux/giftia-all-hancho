@@ -21,10 +21,16 @@ def get_connection():
     required = ["DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME"]
     missing = [k for k in required if not os.environ.get(k)]
     if missing:
-        raise EnvironmentError(f".env に設定がありません: {', '.join(missing)}（.env.example を .env にコピーして埋める）")
+        raise EnvironmentError(
+            f".env に設定がありません: {', '.join(missing)}（.env.example を .env にコピーして埋める）"
+        )
 
     # Azure は暗号化（SSL/TLS）しない接続を断る。証明書のパスがあれば、相手が Azure のサーバーかも確かめる
-    ssl = {"ca": os.environ["DB_SSL_CA"]} if os.environ.get("DB_SSL_CA") else {"ssl_disabled": False}
+    ssl = (
+        {"ca": os.environ["DB_SSL_CA"]}
+        if os.environ.get("DB_SSL_CA")
+        else {"ssl_disabled": False}
+    )
 
     return pymysql.connect(
         host=os.environ["DB_HOST"],
