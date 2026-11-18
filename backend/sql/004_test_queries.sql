@@ -150,7 +150,7 @@ GROUP BY p.product_id, p.product_name, p.rating, p.review_count
 ORDER BY score DESC, p.rating DESC, p.review_count DESC, p.product_id ASC;
 
 -- =====================================================================
--- ケース6：該当タグがない（「特にない」）（choiceIds: [403]）
+-- ケース6：該当タグがない（「特にない」）（choiceIds: [404]）
 -- 期待：0件（行が1つも出ない。エラーにならない）
 -- =====================================================================
 SELECT
@@ -164,7 +164,7 @@ FROM products p
 JOIN product_life_tags plt ON plt.product_id = p.product_id
 WHERE plt.life_tag IN (
         SELECT life_tag FROM choice_life_tags
-        WHERE choice_id IN (403)
+        WHERE choice_id IN (404)
       )
   AND p.stock > 0
   AND EXISTS (

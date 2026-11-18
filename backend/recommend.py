@@ -90,3 +90,29 @@ def recommend(choice_ids: list[int]) -> list[dict]:
         matched = set(r.pop("matched").split("\t"))
         r["matched_tags"] = [t for t in answer_tags if t in matched]
     return rows
+
+# ── いさ 推薦理由（FR-06）の定型文 ─────────────────
+# 生活場面タグごとの言い回し。「〜お母さまに」につながる形で書く（要件定義書 6.3 の表示の例に合わせた）。
+# タグの表記は、DBの life_tag と1文字でも違うと使われない。
+REASON_PHRASES = {
+    "お茶時間": "毎日のお茶の時間を楽しむ",
+    "コーヒー時間": "コーヒーの時間を大切にする",
+    "晩酌": "晩酌を楽しむ",
+    "甘いもの好き": "甘いものが好きな",
+    "料理好き": "料理やお菓子づくりが好きな",
+    "ガーデニング": "庭やベランダの植物を育てる",
+    "花のある暮らし": "部屋に花を飾る",
+    "手肌ケア": "手肌のケアを気にしている",
+    "リラックス": "ほっとくつろぐ時間を大切にする",
+    "健康志向": "体に気をつけている",
+    "冷え対策": "足元の冷えが気になる",
+    "お出かけ好き": "友だちと出かけるのが好きな",
+}
+
+
+def build_reason(matched_tags: list[str]) -> str | None:
+    """一致したタグから、推薦理由（定型文）を作る。使える言い回しが1つもなければ None"""
+    phrases = [REASON_PHRASES[t] for t in matched_tags if t in REASON_PHRASES]
+    if not phrases:
+        return None
+    return "、".join(phrases) + "お母さまに、日常で使いやすい商品としておすすめします"
