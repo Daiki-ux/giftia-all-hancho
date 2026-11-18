@@ -151,7 +151,7 @@ def recommendations(body: RecommendRequest):
             **to_gift(r),  # 商品情報は/api/searchと同じ形
             "score": r["score"],  # 一致したタグの種類
             "matchedTags": r["matched_tags"],  # 一致したタグの種類のリスト
-            "reason": None,  # 推薦理由（FR-06）, phase2以降で追加するまではnull。
+            "reason": recommend.build_reason(r["matched_tags"]),  # 推薦理由（FR-06）。定型文
         }
         for r in rows
     ]
