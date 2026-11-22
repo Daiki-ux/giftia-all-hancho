@@ -8,7 +8,7 @@ on:
     branches:
       - "main"
     paths:
-      - "frontend/**"
+      - "giftia-frontend/**"
       - ".github/workflows/main_gen13-app-step3-1-4161-fe.yml"
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
       contents: read #This is required for actions/checkout
     defaults:
       run:
-        working-directory: frontend
+        working-directory: giftia-frontend
 
     steps:
       - uses: actions/checkout@v4
