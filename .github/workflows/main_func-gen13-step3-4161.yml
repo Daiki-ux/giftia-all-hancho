@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/
-      defaults:
-        run:
-          working-directory: backend
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - name: Checkout repository
