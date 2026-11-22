@@ -30,7 +30,8 @@ jobs:
           node-version: "24.x"
 
       - name: npm install, build, and test
-        env: NEXT_PUBLIC_API_URL:${{ vars.NEXT_PUBLIC_API_URL }}
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
         run: |
           npm install
           npm run build --if-present
