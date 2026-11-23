@@ -1,8 +1,8 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { API } from "@/lib/api";
 
 type Choice = {
   id: number;
@@ -39,9 +39,7 @@ export default function GuidePage() {
   useEffect(() => {
     async function loadQuestions() {
       try {
-        const response = await fetch(
-          "http://localhost:8000/api/questions"
-        );
+        const response = await fetch(`${API}/api/questions`);
 
         if (!response.ok) {
           throw new Error("質問の取得に失敗しました");
@@ -80,16 +78,13 @@ export default function GuidePage() {
       // 質問順に選択肢IDを並べる
       const choiceIds = questions.map((q) => answers[q.id]);
 
-      const response = await fetch(
-        "http://localhost:8000/api/recommendations",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ choiceIds }),
-        }
-      );
+      const response = await fetch(`${API}/api/recommendations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ choiceIds }),
+      });
 
       const data = await response.json();
 
@@ -97,28 +92,22 @@ export default function GuidePage() {
         throw new Error(
           typeof data.detail === "string"
             ? data.detail
-            : `推薦APIでエラーが発生しました（HTTP ${response.status}）`
+            : `推薦APIでエラーが発生しました（HTTP ${response.status}）`,
         );
       }
 
       const result = data as RecommendationResponse;
 
       // 推薦結果を同じタブ内に保存
-      sessionStorage.setItem(
-        "giftia_recommendations",
-        JSON.stringify(result)
-      );
+      sessionStorage.setItem("giftia_recommendations", JSON.stringify(result));
 
       setResultCount(result.total);
 
       // 保存が成功したら結果画面へ自動遷移
       router.push("/results");
-
     } catch (err) {
       setSubmitError(
-        err instanceof Error
-          ? err.message
-          : "推薦結果を取得できませんでした。"
+        err instanceof Error ? err.message : "推薦結果を取得できませんでした。",
       );
     } finally {
       setSubmitting(false);
@@ -174,8 +163,8 @@ export default function GuidePage() {
                   }));
                   setResultCount(null);
                 }}
-              />
-              {" "}{choice.text}
+              />{" "}
+              {choice.text}
             </label>
           ))}
 
@@ -197,9 +186,7 @@ export default function GuidePage() {
             {currentIndex < questions.length - 1 && (
               <button
                 type="button"
-                disabled={
-                  answers[question.id] === undefined || submitting
-                }
+                disabled={answers[question.id] === undefined || submitting}
                 onClick={() => setCurrentIndex(currentIndex + 1)}
               >
                 次へ
@@ -215,19 +202,14 @@ export default function GuidePage() {
                   disabled={submitting}
                   onClick={submitAnswers}
                 >
-                  {submitting
-                    ? "おすすめを検索中..."
-                    : "おすすめギフトを探す"}
+                  {submitting ? "おすすめを検索中..." : "おすすめギフトを探す"}
                 </button>
 
-                {submitError && (
-                  <p role="alert">{submitError}</p>
-                )}
+                {submitError && <p role="alert">{submitError}</p>}
 
                 {resultCount !== null && (
                   <p>
-                    推薦API接続成功！
-                    候補商品を{resultCount}件取得しました。
+                    推薦API接続成功！ 候補商品を{resultCount}件取得しました。
                   </p>
                 )}
               </div>
